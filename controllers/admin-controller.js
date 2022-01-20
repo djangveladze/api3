@@ -49,6 +49,19 @@ class AdminController {
             })
         }
     }
+
+    async recoverUser(req, res) {
+        try {
+            const { nickname } = req.query
+            const recoverUser = await this.adminService.recoverUser(nickname)
+            return res.status(400).send(recoverUser)
+        } catch (err) {
+            const statusCode = this.errorCodeGenerator.generateErrorCode(err)
+            return res.status(statusCode).send({
+                message: err.message
+            })
+        }
+    }
 }
 
 module.exports = AdminController

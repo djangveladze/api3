@@ -45,6 +45,16 @@ class UserService {
         }
     }
 
+    async findDeleteUserByNickname(nickname) {
+        try {
+            const user = await this.userRepository.findDeleteUserByNickname(nickname)
+            return user
+        } catch (err) {
+            this.logger.error(err.message)
+            throw err
+        }
+    }
+
     async checkIfUserExists(nickname, password) {
         try {
             const userSalt = await this.userRepository.getUserSalt(nickname)

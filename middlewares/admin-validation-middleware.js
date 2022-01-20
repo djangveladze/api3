@@ -16,16 +16,30 @@ class AdminValidationMiddleware {
         this.tokenValidator = new TokenValidator()
     }
 
+    async validateRecover(req, res, next) {
+        try {
+            const { nickname: recoverUserNickname } = req.query
+            await this.userValidator.validateDeleteUserByNickname(recoverUserNickname)
+            await this._validateAdmin(req)
+            next()
+        } catch (err) {
+            const statusCode = this.errorCodeGenerator.generateErrorCode(err)
+            return res.status(statusCode).send({
+                message: err.message
+            })
+        }
+    }
+
     async validateUpdate(req, res, next) {
         try {
-            const nickname = await this._validateAdmin(req)
-            const ifUnmodifiedSince = req.headers["if-unmodified-since"]
-            if (ifUnmodifiedSince !== undefined) {
-                const userUpdateAt = this.userService.getUserUpdateAt(nickname)
-                await this.headerValidator.validateIfUnmodifiedSince(userUpdateAt, ifUnmodifiedSince)
-            }
             const { nickname: updatedUserNickname } = req.query
             await this.userValidator.validateUserByNickname(updatedUserNickname)
+            await this._validateAdmin(req)
+            const ifUnmodifiedSince = req.headers["if-unmodified-since"]
+            if (ifUnmodifiedSince !== undefined) {
+                const userUpdateAt = this.userService.getUserUpdateAt(updatedUserNickname)
+                await this.headerValidator.validateIfUnmodifiedSince(userUpdateAt, ifUnmodifiedSince)
+            }
             next()
         } catch (err) {
             const statusCode = this.errorCodeGenerator.generateErrorCode(err)
@@ -37,14 +51,14 @@ class AdminValidationMiddleware {
 
     async validateDelete(req, res, next) {
         try {
-            const nickname = await this._validateAdmin(req)
-            const ifUnmodifiedSince = req.headers["if-unmodified-since"]
-            if (ifUnmodifiedSince !== undefined) {
-                const userUpdateAt = this.userService.getUserUpdateAt(nickname)
-                await this.headerValidator.validateIfUnmodifiedSince(userUpdateAt, ifUnmodifiedSince)
-            }
             const { nickname: deletedUserNickname } = req.query
             await this.userValidator.validateUserByNickname(deletedUserNickname)
+            await this._validateAdmin(req)
+            const ifUnmodifiedSince = req.headers["if-unmodified-since"]
+            if (ifUnmodifiedSince !== undefined) {
+                const userUpdateAt = this.userService.getUserUpdateAt(deletedUserNickname)
+                await this.headerValidator.validateIfUnmodifiedSince(userUpdateAt, ifUnmodifiedSince)
+            }
             next()
 
         } catch (err) {
@@ -59,7 +73,6 @@ class AdminValidationMiddleware {
         const jwtToken = req.headers.authorization.split(' ')[1]
         const nickname = await this.tokenValidator.validateJwtToken(jwtToken)
         await this.adminValidator.validateAdmin(nickname)
-        return nickname
     }
 
 }

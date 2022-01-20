@@ -38,6 +38,16 @@ class AdminService {
         }
     }
 
+    async recoverUser(nickname) {
+        try {
+            const recoverUser=await this.userRepository.recoverUser(nickname)
+            return recoverUser
+        } catch (err) {
+            this.logger.error(err.message)
+            throw err
+        }
+    }
+
 }
 
 module.exports = AdminService

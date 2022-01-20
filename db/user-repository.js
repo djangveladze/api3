@@ -15,6 +15,11 @@ class UserRepository {
         await User.softDelete({ nickname })
     }
 
+    async recoverUser(nickname) {
+        const user = await User.findOneAndUpdate({ nickname }, { isDeleted: false })
+        return user
+    }
+
     async findUserByNickname(nickname) {
         const user = await User.findOne({
             nickname,
@@ -22,6 +27,17 @@ class UserRepository {
         }).select(this.blockProperties)
         if (user === null) {
             throw new Error("user not exists")
+        }
+        return user
+    }
+
+    async findDeleteUserByNickname(nickname) {
+        const user = await User.findOne({
+            nickname,
+            isDeleted: true
+        }).select(this.blockProperties)
+        if (user === null) {
+            throw new Error("delete user not exists")
         }
         return user
     }

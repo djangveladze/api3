@@ -32,6 +32,10 @@ class UserValidator {
             throw new Error("one of the login params is incorrect")
         }
     }
+    async validateDeleteUserByNickname(nickname){
+        this.validateNickname(nickname)
+        await this.userService.findDeleteUserByNickname(nickname)
+    }
 
     validateSkip(skip) {
         const convertSkipToInteger = Number(skip)
