@@ -1,0 +1,29 @@
+{
+  "name": "api1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "crypto-random": "^1.0.3",
+    "crypto-random-string": "^4.0.0",
+    "dotenv": "^11.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.2.2",
+    "mongoose": "^6.1.5",
+    "mongoose-delete": "^0.5.4",
+    "pino": "^7.6.2",
+    "pino-pretty": "^7.3.0",
+    "soft-delete-plugin-mongoose": "^1.0.15"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
